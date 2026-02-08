@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DbTestService } from './db-test.service';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -19,6 +21,9 @@ import { DbTestService } from './db-test.service';
         rejectUnauthorized: false,
       },
     }),
+
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [DbTestService],
