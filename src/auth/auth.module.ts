@@ -10,6 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { Patient } from 'src/patients/patient.entity';
 import { Doctor } from 'src/doctors/doctor.entity';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -26,6 +27,6 @@ import { Doctor } from 'src/doctors/doctor.entity';
     TypeOrmModule.forFeature([User, Patient, Doctor]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, GoogleStrategy],
+  providers: [AuthService, GoogleStrategy, JwtStrategy],
 })
 export class AuthModule { }
