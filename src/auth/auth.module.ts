@@ -4,14 +4,16 @@ import { UsersModule } from '../users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
-import { GoogleStrategy } from './google.strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
 import { AuthService } from './auth.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/users/user.entity';
+import { Patient } from 'src/patients/patient.entity';
+import { Doctor } from 'src/doctors/doctor.entity';
 
 @Module({
   imports: [
     PassportModule,
-    UsersModule,
-    ConfigModule,
 
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -21,8 +23,9 @@ import { AuthService } from './auth.service';
         signOptions: { expiresIn: '7d' },
       }),
     }),
+    TypeOrmModule.forFeature([User, Patient, Doctor]),
   ],
   controllers: [AuthController],
-  providers: [GoogleStrategy, AuthService],
+  providers: [AuthService, GoogleStrategy],
 })
 export class AuthModule { }

@@ -1,40 +1,44 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    CreateDateColumn,
-    UpdateDateColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToOne, UpdateDateColumn } from 'typeorm';
+import { Patient } from '../patients/patient.entity';
+import { Doctor } from '../doctors/doctor.entity';
+
+export enum UserRole {
+    PATIENT = 'PATIENT',
+    DOCTOR = 'DOCTOR',
+}
 
 @Entity('users')
 export class User {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+    @PrimaryGeneratedColumn('increment')
+    id: number;
 
-    @Column({ unique: true })
+    @Column({ length: 100 })
+    name: string;
+
+    @Column({ length: 15, unique: true, nullable: true })
+    phoneNumber: string;
+
+    @Column({ nullable: true, unique: true })
     email: string;
 
-    @Column()
-    full_name: string;
-
     @Column({ nullable: true })
-    google_id: string;
+    googleId: string;
 
-    @Column({ default: 'PATIENT' })
-    role: string;
+    @Column({
+        type: 'enum',
+        enum: UserRole,
+    })
+    role: UserRole;
 
-    @Column({ nullable: true })
-    phone: string;
-
-    @Column({ nullable: true })
-    password_hash: string;
-
-    @Column({ default: true })
-    is_active: boolean;
+    @Column({ default: false })
+    isProfileCompleted: boolean;
 
     @CreateDateColumn()
-    created_at: Date;
+    createdAt: Date;
 
-    @UpdateDateColumn()
-    updated_at: Date;
+    @OneToOne(() => Patient, patient => patient.user)
+    patient: Patient;
+
+    @OneToOne(() => Doctor, doctor => doctor.user)
+    doctor: Doctor;
 }

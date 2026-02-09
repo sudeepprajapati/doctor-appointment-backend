@@ -1,6 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, Profile } from 'passport-google-oauth20';
 import { Injectable } from '@nestjs/common';
+import { Request } from 'express';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
@@ -8,7 +9,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         super({
             clientID: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-            callbackURL: 'http://localhost:3000/auth/google/callback',
+            callbackURL: process.env.GOOGLE_CALLBACK_URL as string,
             scope: ['email', 'profile'],
             passReqToCallback: true,
         });
@@ -16,19 +17,17 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     }
 
     async validate(
-        req: any,
+        req: Request,
         accessToken: string,
         refreshToken: string,
         profile: any,
     ) {
-        const role = (req.query.state || 'PATIENT').toUpperCase();
-
-        console.log('ROLE FROM STATE:', role);
+        const role = req.path.includes('patient') ? 'PATIENT' : 'DOCTOR';
 
         return {
             googleId: profile.id,
             email: profile.emails[0].value,
-            fullName: profile.displayName,
+            name: profile.displayName,
             role,
         };
     }

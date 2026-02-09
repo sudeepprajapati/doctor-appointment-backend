@@ -1,31 +1,53 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
+
+import { User, UserRole } from '../users/user.entity';
+import { Patient } from 'src/patients/patient.entity';
+import { Doctor } from 'src/doctors/doctor.entity';
 
 @Injectable()
 export class AuthService {
     constructor(
-        private usersService: UsersService,
-        private jwtService: JwtService,
+        @InjectRepository(User)
+        private readonly userRepo: Repository<User>,
+        @InjectRepository(Patient)
+        private readonly patientRepo: Repository<Patient>,
+
+        @InjectRepository(Doctor)
+        private readonly doctorRepo: Repository<Doctor>,
+        private readonly jwtService: JwtService,
     ) { }
 
-    async googleLogin(profile: any) {
-        let user = await this.usersService.findByEmail(profile.email);
+    async googleLogin(googleUser: any) {
+        let user = await this.userRepo.findOne({
+            where: { googleId: googleUser.googleId },
+        });
 
         if (!user) {
-            user = await this.usersService.createUser({
-                email: profile.email,
-                full_name: profile.fullName,
-                google_id: profile.googleId,
-                role: profile.role || 'PATIENT',
+            user = await this.userRepo.save({
+                name: googleUser.name,
+                email: googleUser.email,
+                googleId: googleUser.googleId,
+                role: googleUser.role,
+                isProfileCompleted: true,
             });
+
+            if (user.role === UserRole.PATIENT) {
+                await this.patientRepo.save({ user });
+            }
+
+            if (user.role === UserRole.DOCTOR) {
+                await this.doctorRepo.save({ user });
+            }
         }
 
-        const payload = { sub: user.id, email: user.email };
-
-        return {
-            access_token: this.jwtService.sign(payload),
-            user,
-        };
+        const accessToken = this.jwtService.sign({
+            sub: user.id,
+            role: user.role,
+        });
+        return { accessToken };
     }
+
 }
