@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, CreateDateColumn } from 'typeorm';
 import { User } from '../users/user.entity';
 
 @Entity('doctor')
@@ -10,12 +10,12 @@ export class Doctor {
     @JoinColumn({ name: 'user_id' })
     user: User;
 
+    @Column({ length: 100, nullable: true })
+    specialization: string;
+
     @Column({ nullable: true })
     experience: number;
 
-    @Column({ length: 50, nullable: true })
-    licenseNo: string;
-
-    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-    fee: number;
+    @CreateDateColumn()
+    createdAt!: Date;
 }
