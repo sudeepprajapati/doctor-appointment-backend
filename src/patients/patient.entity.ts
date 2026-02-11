@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, Column, CreateDateColumn } from 'typeorm';
 import { User } from 'src/users/user.entity';
 
 export enum Gender {
@@ -16,7 +16,7 @@ export class Patient {
     @JoinColumn({ name: 'user_id' })
     user: User;
 
-    @Column({ length: 100, nullable: true })
+    @Column({ nullable: true })
     name: string;
 
     @Column({ type: 'int', nullable: true })
@@ -28,4 +28,7 @@ export class Patient {
         nullable: true,
     })
     gender: Gender;
+
+    @CreateDateColumn()
+    createdAt: Date;
 }

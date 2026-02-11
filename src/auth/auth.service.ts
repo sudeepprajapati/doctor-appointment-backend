@@ -49,17 +49,23 @@ export class AuthService {
         }
 
         if (googleUser.role === UserRole.PATIENT && !user.patient) {
-            await this.patientRepo.save({ user });
+            await this.patientRepo.save({
+                user,
+                name: user.name,
+            });
         }
 
         if (googleUser.role === UserRole.DOCTOR && !user.doctor) {
-            const doctor = await this.doctorRepo.save({ user });
+            const doctor = await this.doctorRepo.save({
+                user,
+                name: user.name,
+            });
 
             // Generate verification token for doctor onboarding
             const token = await this.doctorsService.generateVerificationToken(doctor);
 
             // Temporary: log token for testing verification API
-            console.log('Doctor verification token:', token.token);
+            // console.log('Doctor verification token:', token.token);
         }
 
         const payload = {
