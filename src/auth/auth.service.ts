@@ -4,21 +4,30 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 
 import { User, UserRole } from '../users/user.entity';
+<<<<<<< HEAD
 import { Patient } from '../patients/patient.entity';
 import { Doctor } from 'src/doctors/entities/doctor.entity';
 import { DoctorsService } from 'src/doctors/doctors.service';
+=======
+import { Patient } from 'src/patients/patient.entity';
+import { Doctor } from 'src/doctors/doctor.entity';
+>>>>>>> origin/main
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User)
         private readonly userRepo: Repository<User>,
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/main
         @InjectRepository(Patient)
         private readonly patientRepo: Repository<Patient>,
 
         @InjectRepository(Doctor)
         private readonly doctorRepo: Repository<Doctor>,
+<<<<<<< HEAD
 
         private readonly jwtService: JwtService,
 
@@ -38,10 +47,23 @@ export class AuthService {
 
         if (!user) {
             user = this.userRepo.create({
+=======
+        private readonly jwtService: JwtService,
+    ) { }
+
+    async googleLogin(googleUser: any) {
+        let user = await this.userRepo.findOne({
+            where: { googleId: googleUser.googleId },
+        });
+
+        if (!user) {
+            user = await this.userRepo.save({
+>>>>>>> origin/main
                 name: googleUser.name,
                 email: googleUser.email,
                 googleId: googleUser.googleId,
                 role: googleUser.role,
+<<<<<<< HEAD
                 isProfileCompleted: false,
             });
 
@@ -82,4 +104,25 @@ export class AuthService {
             },
         };
     }
+=======
+                isProfileCompleted: true,
+            });
+
+            if (user.role === UserRole.PATIENT) {
+                await this.patientRepo.save({ user });
+            }
+
+            if (user.role === UserRole.DOCTOR) {
+                await this.doctorRepo.save({ user });
+            }
+        }
+
+        const accessToken = this.jwtService.sign({
+            sub: user.id,
+            role: user.role,
+        });
+        return { accessToken };
+    }
+
+>>>>>>> origin/main
 }
