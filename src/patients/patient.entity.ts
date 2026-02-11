@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, Column } from 'typeorm';
 import { User } from 'src/users/user.entity';
 
 export enum Gender {
@@ -6,6 +7,9 @@ export enum Gender {
     FEMALE = 'FEMALE',
     OTHER = 'OTHER',
 }
+
+import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
+import { User } from 'src/users/user.entity';
 
 @Entity('patient')
 export class Patient {
