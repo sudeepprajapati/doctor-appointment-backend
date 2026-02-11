@@ -5,7 +5,8 @@ import { JwtService } from '@nestjs/jwt';
 
 import { User, UserRole } from '../users/user.entity';
 import { Patient } from '../patients/patient.entity';
-import { Doctor } from '../doctors/doctor.entity';
+import { Doctor } from 'src/doctors/entities/doctor.entity';
+import { DoctorsService } from 'src/doctors/doctors.service';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,8 @@ export class AuthService {
         private readonly doctorRepo: Repository<Doctor>,
 
         private readonly jwtService: JwtService,
+
+        private readonly doctorsService: DoctorsService,
     ) { }
 
     async googleLogin(googleUser: {
@@ -50,7 +53,13 @@ export class AuthService {
         }
 
         if (googleUser.role === UserRole.DOCTOR && !user.doctor) {
-            await this.doctorRepo.save({ user });
+            const doctor = await this.doctorRepo.save({ user });
+
+            // Generate verification token for doctor onboarding
+            const token = await this.doctorsService.generateVerificationToken(doctor);
+
+            // Temporary: log token for testing verification API
+            console.log('Doctor verification token:', token.token);
         }
 
         const payload = {
@@ -73,5 +82,4 @@ export class AuthService {
             },
         };
     }
-
 }
