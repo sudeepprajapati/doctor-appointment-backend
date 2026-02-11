@@ -1,6 +1,11 @@
 import { PassportStrategy } from '@nestjs/passport';
+<<<<<<< HEAD
+import { Strategy } from 'passport-google-oauth20';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+=======
 import { Strategy, Profile } from 'passport-google-oauth20';
 import { Injectable } from '@nestjs/common';
+>>>>>>> origin/main
 import { Request } from 'express';
 
 @Injectable()
@@ -22,7 +27,15 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         refreshToken: string,
         profile: any,
     ) {
+<<<<<<< HEAD
+        const role = req.query.state as string;
+
+        if (!role || !['PATIENT', 'DOCTOR'].includes(role)) {
+            throw new UnauthorizedException('Invalid role');
+        }
+=======
         const role = req.path.includes('patient') ? 'PATIENT' : 'DOCTOR';
+>>>>>>> origin/main
 
         return {
             googleId: profile.id,
@@ -31,6 +44,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             role,
         };
     }
+<<<<<<< HEAD
+=======
 
 
+>>>>>>> origin/main
 }

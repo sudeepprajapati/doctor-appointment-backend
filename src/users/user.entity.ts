@@ -1,6 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToOne, UpdateDateColumn } from 'typeorm';
 import { Patient } from '../patients/patient.entity';
+<<<<<<< HEAD
+import { Doctor } from 'src/doctors/entities/doctor.entity';
+=======
 import { Doctor } from '../doctors/doctor.entity';
+>>>>>>> origin/main
 
 export enum UserRole {
     PATIENT = 'PATIENT',
