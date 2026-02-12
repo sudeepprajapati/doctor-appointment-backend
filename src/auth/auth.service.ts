@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -21,7 +21,6 @@ export class AuthService {
         private readonly doctorRepo: Repository<Doctor>,
 
         private readonly jwtService: JwtService,
-
         private readonly doctorsService: DoctorsService,
     ) { }
 
@@ -35,6 +34,13 @@ export class AuthService {
             where: { googleId: googleUser.googleId },
             relations: ['patient', 'doctor'],
         });
+
+        // Prevent cross-role login
+        if (user && user.role !== googleUser.role) {
+            throw new UnauthorizedException(
+                `This account is already registered as ${user.role}`,
+            );
+        }
 
         if (!user) {
             user = this.userRepo.create({
@@ -61,11 +67,7 @@ export class AuthService {
                 name: user.name,
             });
 
-            // Generate verification token for doctor onboarding
-            const token = await this.doctorsService.generateVerificationToken(doctor);
-
-            // Temporary: log token for testing verification API
-            // console.log('Doctor verification token:', token.token);
+            await this.doctorsService.generateVerificationToken(doctor);
         }
 
         const payload = {
@@ -78,7 +80,6 @@ export class AuthService {
 
         return {
             accessToken,
-            expiresIn: 604800,
             user: {
                 id: user.id,
                 name: user.name,

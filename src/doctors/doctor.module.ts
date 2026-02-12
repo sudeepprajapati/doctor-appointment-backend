@@ -6,6 +6,7 @@ import { DoctorProfile } from './entities/doctor-profile.entity';
 import { DoctorVerificationToken } from './entities/doctor-verification-token.entity';
 import { DoctorsController } from './doctors.controller';
 import { DoctorsService } from './doctors.service';
+import { DoctorAvailability } from './entities/doctor-availability.entity';
 
 @Module({
     imports: [
@@ -13,6 +14,7 @@ import { DoctorsService } from './doctors.service';
             Doctor,
             DoctorProfile,
             DoctorVerificationToken,
+            DoctorAvailability
         ]),
         UsersModule,
     ],
