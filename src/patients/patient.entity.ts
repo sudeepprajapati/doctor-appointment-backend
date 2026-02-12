@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, Column, CreateDateColumn } from 'typeorm';
 import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, Column } from 'typeorm';
 import { User } from 'src/users/user.entity';
 
@@ -8,11 +8,9 @@ export enum Gender {
     OTHER = 'OTHER',
 }
 
-=======
 import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
 import { User } from 'src/users/user.entity';
 
->>>>>>> origin/main
 @Entity('patient')
 export class Patient {
     @PrimaryGeneratedColumn('increment')
@@ -21,9 +19,8 @@ export class Patient {
     @OneToOne(() => User, user => user.patient, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' })
     user: User;
-<<<<<<< HEAD
 
-    @Column({ length: 100, nullable: true })
+    @Column({ nullable: true })
     name: string;
 
     @Column({ type: 'int', nullable: true })
@@ -35,6 +32,7 @@ export class Patient {
         nullable: true,
     })
     gender: Gender;
-=======
->>>>>>> origin/main
+
+    @CreateDateColumn()
+    createdAt: Date;
 }
