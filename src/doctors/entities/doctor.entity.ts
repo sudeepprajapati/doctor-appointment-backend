@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { DoctorVerificationToken } from './doctor-verification-token.entity';
 import { DoctorProfile } from './doctor-profile.entity';
+import { DoctorAvailability } from './doctor-availability.entity';
 
 export enum DoctorStatus {
     PENDING = 'PENDING',
@@ -46,6 +47,12 @@ export class Doctor {
     // NEW RELATION
     @OneToOne(() => DoctorProfile, profile => profile.doctor)
     profile: DoctorProfile;
+
+    @OneToMany(
+        () => DoctorAvailability,
+        availability => availability.doctor,
+    )
+    availabilities: DoctorAvailability[];
 
     @CreateDateColumn()
     createdAt!: Date;
